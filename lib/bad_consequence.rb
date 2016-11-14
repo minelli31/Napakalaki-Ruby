@@ -38,7 +38,20 @@ module Napakalaki
         def get_bad_levels
           return @levels
         end
-                
+        
+        def isEmpty
+            empty = false
+
+            if(@levels == 0 and @nVisibleTreasures <= 0 and 
+                @nHiddenTreasures <= 0 and (@specificVisibleTreasures == nil or @specificVisibleTreasures.empty?) and
+                (@specificHiddenTreasures == nil or @specificHiddenTreasures.empty?) and @death == false)
+                    empty = true
+            end
+
+            return empty
+
+        end   
+        
         def to_s
             "Text = #{@text} \nLost levels = #{@levels} \nNumber of visible treasures = #{@nVisibleTreasures} \nNumber of hidden treasures = #{@nHiddenTreasures}"
         end

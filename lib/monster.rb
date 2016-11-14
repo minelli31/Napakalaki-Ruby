@@ -36,6 +36,14 @@ module Napakalaki
       return @badConsequence.specificHiddenTreasures
     end
     
+    def getLevelsGained
+        return @prize.levels
+    end
+
+    def getTreasuresGained
+        return @prize.treasures
+    end
+    
     def greed_levels(level)
       if @prize.get_prize_level > level
         return true
