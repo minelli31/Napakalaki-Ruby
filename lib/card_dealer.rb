@@ -15,8 +15,6 @@ module Napakalaki
 
         attr_accessor :unusedMonsters, :usedMonsters, :usedTreasures, :unusedTreasures
         
-        private
-
         def initialize
             @usedMonsters = Array.new
             @unusedMonsters = Array.new
@@ -24,10 +22,51 @@ module Napakalaki
             @unusedTreasures = Array.new
         end
         
+        def nextTreasure
+            if (@unusedTreasures.empty?)
+                @usedTreasures.each {|t|
+                    @unusedTreasures << t
+                }
+            end
+            shuffleTreasures
+            @usedTreasures.clear
+            @unusedTreasures.at(0)
+        end
+        
+        def nextTurn
+            stateOK = nextTurnAllowed
+            
+        end
+        
+        def nextMonster
+            if (@unusedMonsters.empty?)
+                @usedMonsters.each {|m|
+                    @unusedMonsters << m
+                }
+            end
+            shuffleMonsters
+            @usedMonsters.clear
+            @unusedMonsters.at(0)
+        end
+        
+        def giveTreasureBack(t)
+            if !@usedTreasures.include?(t)
+                @usedTreasure << t
+            end
+        end
+
+        def giveMonsterBack(m)
+            if !@usedMonsters.include?(m)
+                @usedMonsters << m
+            end
+        end
+        
         def initCards
             initTreasureCardDeck
             initMonsterCardDeck
         end
+        
+    private    
         
         def initTreasureCardDeck
             @unusedTreasures << Treasure.new('¡Si mi amo!',4,TreasureKind::HELMET)
@@ -151,17 +190,6 @@ module Napakalaki
             @unusedMonsters.shuffle!
         end
         
-        def giveTreasureBack(t)
-            if !@usedTreasures.include?(t)
-                @usedTreasure << t
-            end
-        end
-
-        def giveMonsterBack(m)
-            if !@usedMonsters.include?(m)
-                @usedMonsters << m
-            end
-        end
     end  
 end
 

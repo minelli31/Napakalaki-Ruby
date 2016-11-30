@@ -55,7 +55,22 @@ module Napakalaki
         def to_s
             "Text = #{@text} \nLost levels = #{@levels} \nNumber of visible treasures = #{@nVisibleTreasures} \nNumber of hidden treasures = #{@nHiddenTreasures}"
         end
+        
+    private
     
+        def substractVisibleTreasure(t)
+            @specificVisibleTreasures.delete(t)
+            unless (@nVisibleTreasures.empty?)
+                @nVisibleTreasures = @nVisibleTreasures - 1             
+            end
+        end
+        
+        def substractHiddenTreasure(t)
+            @specificHiddenTreasures.delete(t)
+            unless (@nHiddenTreasures.empty?)
+                @nHiddenTreasures = @nHiddenTreasures - 1             
+            end
+        end
   end
 end
 

@@ -27,11 +27,17 @@ module Napakalaki
         end
         
         def discardVisibleTreasures(treasures)
-            
+            treasures.each { |t|  
+                @currentPlayer.discardVisibleTreasure(t)
+                @dealer.giveTreasureBack(t)
+            }            
         end
         
         def discardHiddenTreasures(treasures)
-            
+            treasures.each { |t|  
+                @currentPlayer.discardHiddenTreasure(t)
+                @dealer.giveTreasureBack(t)
+            } 
         end
         
         def makeTreasuresVisible(treasures)
@@ -43,11 +49,23 @@ module Napakalaki
         end
 
         def initGame(players)
-            
+            initPlayers(players)
+            setEnemies
+            dealer.initCards
+            nextTurn
         end
         
         def nextTurn
+            stateOK = nextTurnIsAllowed
             
+            if stateOK
+                @currentMonster = @dealer.nextMonster
+                @currentPlayer = nextPLayer
+                if @currentPlayer.isDead 
+                    @currentPlayer.initTreasures
+                end
+            end
+            stateOk
         end
         
         def endOfGame(result)
@@ -77,7 +95,7 @@ module Napakalaki
             }
         end
         
-        def nextPlayer()
+        def nextPlayer
             if(@currentPlayerIndex == -1)             
                 @currentPlayerIndex = rand(players.size)
             else

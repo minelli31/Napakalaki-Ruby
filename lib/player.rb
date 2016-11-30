@@ -241,6 +241,10 @@ module Napakalaki
             return nTreasures
         end
         
+        def giveMeATreasure
+            @hiddenTreasures.at(rand(@hiddenTreasures.length + 1))
+        end
+        
         def canYouGiveMeATreasure
             if (@hiddenTreasures.empty? && @visibleTreasures.empty?)
                 return false
