@@ -248,5 +248,41 @@ module Napakalaki
                 return true
             end
         end
+        
+        def canMakeTreasureVisible(t)
+            canI     = false
+            armor = 0
+            onehand = 0
+            bothhand = 0
+            helmet = 0
+            shoe = 0
+            necklace = 0
+
+            @visibleTreasures.each {|tr|
+                tr.getType == TreasureKind::ARMOR    ? armor   = armor + 1     : armor
+                tr.getType == TreasureKind::ONEHAND  ? onehand = onehand + 1   : onehand
+                tr.getType == TreasureKind::BOTHHAND ? bothhand = bothhand + 1 : bothhand
+                tr.getType == TreasureKind::HELMET   ? helmet = helmet + 1     : helmet
+                tr.getType == TreasureKind::SHOE     ? shoe = shoe + 1         : shoe
+                tr.getType == TreasureKind::NECKLACE ? necklace = necklace + 1 : necklace
+            }
+
+            if ((armor == 0) && (tr.getType == TreasureKind::ARMOR))
+                canI = true
+            elsif((onehand < 2) && (bothhand == 0) && (tr.getType == TreasureKind::ONEHAND))
+                canI = true
+            elsif((bothhand == 0) && (onehand == 0) && (tr.getType == TreasureKind::BOTHHAND))
+                canI = true
+            elsif((helmet == 0) && (tr.getType == TreasureKind::HELMET))
+                canI = true
+            elsif((shoe == 0) && (tr.getType == TreasureKind::SHOE))
+                canI = true
+            elsif((necklace == 0) && (tr.getType == TreasureKind::NECKLACE))
+                canI = true 
+            end
+
+            return canI;
+        end
+
     end
 end

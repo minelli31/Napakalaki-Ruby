@@ -21,7 +21,7 @@ module Napakalaki
       super(name, combatLevel, prize, badConsequence)
       @tamMonsters = tamMonsters    
     end
-    
+  
     puts "\n------------------Nivel de combate superior a 10------------------\n"
     @printMonsters.delete_if {!@printMonsters.empty? }
     @unusedMonsters.each { |m| 

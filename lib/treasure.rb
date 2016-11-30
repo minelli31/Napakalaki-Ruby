@@ -18,7 +18,10 @@ module Napakalaki
             @maxBonus = max
             @type = t
         end
-
+        
+        def getType
+            return @type
+        end
         def getBasicValue
             return @minBonus
         end
