@@ -23,7 +23,9 @@ module Napakalaki
         end
         
         def developCombat
-            
+            combatResult = @currentPlayer.combat(@currentMonster)
+            @dealer.giveMonsterBack(@currentMonster)
+            return combatResult
         end
         
         def discardVisibleTreasures(treasures)
@@ -41,7 +43,9 @@ module Napakalaki
         end
         
         def makeTreasuresVisible(treasures)
-            
+            treasures.each {|t|
+                @currentPlayer.makeTreasureVisible(t)
+            }            
         end
         
         def buyLevels(visible, hidden)
@@ -80,13 +84,13 @@ module Napakalaki
             @currentMonster
         end
         
-    private
+        private
         
         def setEnemies
             begin
                 enemy = @players.at(rand(players.length + 1))                
             end until enemy == @currentPlayer 
-                @currentPlayer.setEnemy(enemy)
+            @currentPlayer.setEnemy(enemy)
         end
         
         def initPlayers(names)

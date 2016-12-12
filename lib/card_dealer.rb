@@ -32,12 +32,7 @@ module Napakalaki
             @usedTreasures.clear
             @unusedTreasures.at(0)
         end
-        
-        def nextTurn
-            stateOK = nextTurnAllowed
-            
-        end
-        
+                
         def nextMonster
             if (@unusedMonsters.empty?)
                 @usedMonsters.each {|m|
@@ -103,6 +98,7 @@ module Napakalaki
             @unusedTreasures << Treasure.new('Zapato deja-amigos', 0,TreasureKind::SHOE)
             shuffleTreasures
         end
+        
         def initMonsterCardDeck   
             prize = Prize.new(2, 1)    
             bad_consequence = BadConsequence.new_bad_consequence_specific("Pierdes tu armadura visible y otra oculta", 0, [TreasureKind::ARMOR], [TreasureKind::ARMOR])

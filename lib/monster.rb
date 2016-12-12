@@ -12,7 +12,11 @@ module Napakalaki
       @badConsequence = badConsequence
     end
     
-    def get_combat_level
+    def getBadConsequence
+      return @badConsequence
+    end
+    
+    def getCombatLevel
       return @combatLevel
     end
     

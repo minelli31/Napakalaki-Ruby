@@ -57,12 +57,6 @@ module Napakalaki
             return @canISteal            
         end
         
-        def haveStolen
-            if canISteal
-                @canISteal = true
-            end
-        end
-        
         def getVisibleTreasures
             return @visibleTreasures
         end
@@ -79,15 +73,34 @@ module Napakalaki
 
             number = dice.nextNumber
 
-            if number > 1 
+            if number == 1 
                 treasure = dealer.nextTreasure
                 @hiddenTreasures << treasure
+            elsif number == 6
+                3.times {
+                    treasure = dealer.nextTreasure
+                    @hiddenTreasures << treasure
+                }
+            elsif number > 1 && number < 6
+                2.times {
+                    treasure = dealer.nextTreasure
+                    @hiddenTreasures << treasure
+                }
             end
-
-            if number == 6
-                treasure = dealer.nextTreasure
-                @hiddenTreasures << treasure
+        end
+        
+        def stealTreasure
+            canI = @enemy.canISteal
+            if canI
+                canYou = @enemy.canYouGiveMeATreasure
+                if canYou
+                    @hiddenTreasures.add(@enemy.giveMeATreasure)
+                    haveStolen
+                end
+            else
+                canI = nil
             end
+            return canI
         end
         
         def validState
@@ -102,42 +115,33 @@ module Napakalaki
             return @hiddenTreasures
         end
         
+        #REVISAR
         def combat(m)
             myLevel = getCombatLevel
             monsterLevel = getOponentLevel(m)
-            return m.getBasicValue            
-            if myLevel > monsterLevel
+                
+             if(!canISteal)
+                dice = Dice.instance
+                number = dice.nextNumber
+                if(number < 3)
+                    enemyLevel = @enemy.getCombatLevel
+                    monsterLevel += enemyLevel
+                end
+            end
+            
+            if(myLevel > monsterLevel)
                 applyPrize(m)
                 if @level >= 10 
-                    combatResult = CombatResult::WINANDWINGAME
+                    combatResult = CombatResult::WINGAME
                 else
                     combatResult = CombatResult::WIN
                 end
             else
-                dice = Dice.instance
-                escape = dice.nextNumber
-                if escape < 5
-                    amIDead = false
-                    amIDead = m.kills
-            
-                    if amIDead
-                        die
-                        combatResult = CombatResult::LOSEANDDIE
-                    else
-                        bad = m.badConsequence
-                        applyBadConsequence(bad)
-                        combatResult = CombatResult::LOSE
-                        if shouldConvert 
-                            combatResult = CombatResult::LOSEANDCONVERT
-                        end
-                    end
-                else
-                    combatResult = CombatResult::LOSEANDESCAPE
-                end
+                bad = m.badConsequence
+                applyBadConsequence(bad)
+                combatResult = CombatResult::LOSE
             end
-
-            discardNecklaceIfVisible
-
+            
             return combatResult
 
         end
@@ -151,7 +155,7 @@ module Napakalaki
             end
         
         end
-      
+        
         def discardVisibleTreasure(t)
             @visibleTreasures.delete(t)
             if (@pendingBadConsequence != nil && !@pendingBadConsequence.isEmpty)
@@ -168,11 +172,50 @@ module Napakalaki
             dieIfNoTreasures
         end
         
+        def discardAllTreasures
+            visibleT = Array.new
+            visibleT.copia(@visibleTreasures)
+            visibleT.each { |t|
+                discardVisibleTreasure(t)
+            }
+            hiddenT = Array.new
+            hiddenT.copia(@visibleTreasures)
+            hiddenT.each { |t|
+                discardHiddenTreasure(t)
+            }
+        end
+        
         def to_s
             "Name: #{@name}\tLevel: #{@level}"
         end
         
     private
+        
+        def haveStolen
+            if canISteal
+                @canISteal = true
+            end
+        end
+        
+        def applyPrize(m)
+            nLevels = m.getLevelsGained
+            incrementLevels(nLevels)
+            nTreasures = m.getTreasuresGained
+            if(nTreasures > 0)      
+               0.upto(nTreasures) do |i|
+                   dealer = CardDealer.instance
+                   @hiddenTreasures.add(dealer.nextTreasure)
+               end
+            end
+        end
+        
+        def applyBadConsequence(m)
+            badConsequence = m.getBadConsequence
+            nLevels = badConsequence.getLevels
+            decrementLevels(nLevels)
+            pendingBad = badConsequence.adjustToFitTreasureLists(v,h)
+            setPendingBadConsequence(badConsequence)
+        end
         
         def bringToLife
             @death = false

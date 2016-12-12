@@ -56,6 +56,41 @@ module Napakalaki
             "Text = #{@text} \nLost levels = #{@levels} \nNumber of visible treasures = #{@nVisibleTreasures} \nNumber of hidden treasures = #{@nHiddenTreasures}"
         end
         
+        def adjustToFitTreasureLists(v,h)
+            if @nVisibleTreasures != 0 or @nHiddenTreasures != 0 
+                if (@nVisibleTreasures >= v.length)
+                    nV = v.lengh
+                else
+                    nV = @nVisibleTreasures
+                end
+                
+                if (this.nHiddenTreasures >= h.length)
+                    nH = h.length
+                else
+                    nH = @nHiddenTreasures
+                end
+                b.new_bad_consequence_number(@text,@levels,nV,nH)
+                
+            elsif @specificHiddenTreasures.empty? or @specificVisibleTreasures.empty?
+                sV = Array.new
+                sH = Array.new
+                
+                v.each { |t| 
+                    sV << t.type                   
+                }
+                intersectionV = sV & @specificVisibleTreasures
+                
+                h.each { |t| 
+                        sH << t.type                   
+                }
+                intersectionH = sH & @specificHiddenTreasures
+                
+                b.new_bad_consequence_specific(@text,@levels,sintersectionV,intersectionH)               
+            end
+            
+            return b
+        end
+        
     private
     
         def substractVisibleTreasure(t)
